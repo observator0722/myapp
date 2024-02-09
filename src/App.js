@@ -29,14 +29,14 @@ const router = createBrowserRouter([
 ])
 
 async function loginLoader() {
-  if (fakeAuthProvider.isAuthenticated) {
+  if (fakeAuthProvider.isAuthenticated()) {
     return redirect("/");
   }
   return null;
 }
 
 function protectedLoader({request}) {
-  if (!fakeAuthProvider.isAuthenticated) {
+  if (!fakeAuthProvider.isAuthenticated()) {
     let params = new URLSearchParams();
     params.set("from", new URL(request.url).pathname);
     return redirect("/login?" + params.toString());

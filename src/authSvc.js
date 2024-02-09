@@ -1,15 +1,14 @@
 export const fakeAuthProvider = {
-  isAuthenticated: false,
-  username: null,
-  async signin(username) {
+  isAuthenticated: () => {
+    return !!localStorage.getItem("username")
+  },
+  signin: async (username) => {
     await new Promise((r) => setTimeout(r, 500)); // fake delay
     
-    fakeAuthProvider.isAuthenticated = true;
-    fakeAuthProvider.username = username;
+    localStorage.setItem("username", username)
   },
-  async signout() {
+  signout: async () => {
     await new Promise((r) => setTimeout(r, 500)); // fake delay
-    fakeAuthProvider.isAuthenticated = false;
-    fakeAuthProvider.username = null;
+    localStorage.removeItem("username")
   },
 };
