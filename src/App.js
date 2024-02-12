@@ -3,9 +3,10 @@ import Home from './Home';
 import Login from './Login';
 import PublicPage from './PublicPage';
 import PrivatePage from './PrivatePage';
-import { fakeAuthProvider } from './authSvc';
+import { firebaseAuthProvider } from './authSvc';
+import SignUp from './SignUp';
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: '/',
     element: <Home />,
@@ -16,8 +17,13 @@ const router = createBrowserRouter([
       },
       {
         path: '/login',
-        loader: loginLoader,
+        loader: onlyNotAuthorizedLoader,
         element: <Login />
+      },
+      {
+        path: '/sign-up',
+        loader: onlyNotAuthorizedLoader,
+        element: <SignUp />
       },
       {
         path: '/private',
@@ -28,15 +34,15 @@ const router = createBrowserRouter([
   },
 ])
 
-async function loginLoader() {
-  if (fakeAuthProvider.isAuthenticated()) {
+async function onlyNotAuthorizedLoader() {
+  if (firebaseAuthProvider.isAuthenticated()) {
     return redirect("/");
   }
   return null;
 }
 
 function protectedLoader({request}) {
-  if (!fakeAuthProvider.isAuthenticated()) {
+  if (!firebaseAuthProvider.isAuthenticated()) {
     let params = new URLSearchParams();
     params.set("from", new URL(request.url).pathname);
     return redirect("/login?" + params.toString());
